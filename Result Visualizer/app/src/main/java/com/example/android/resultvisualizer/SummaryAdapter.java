@@ -35,7 +35,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
         super(context, 0, objects);
         rn = s;
         for (int i = 0; i < objects.size(); i++) {
-            expandState.append(i, false);
+            expandState.append(i, true);
         }
     }
 
@@ -50,11 +50,11 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
         Summary summary = getItem(position);
         JSONObject object = summary.getObject();
         int j = summary.getPosition();
-        if (j > 2)
-            j = 2;
+        String b = "";
         ((TextView) view.findViewById(R.id.sem)).setText(("Sem - " + String.valueOf(j)));
         try {
             ((TextView) view.findViewById(R.id.gpa)).setText(object.getString("SGPA(" + String.valueOf(j - 1) + ")"));
+            b = object.getString("Roll No(2)").substring(5, 7);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
         });
         for (int k = ((6 * j) - 5); k <= (6 * j); k++) {
             int i = k % 6 == 0 ? 6 : k % 6;
-            String t = getSubCode(Character.toString(rn.charAt(5)) + String.valueOf(k));
+            String t = getSubCode((j > 2 ? b : Character.toString(rn.charAt(5))) + String.valueOf(k));
             String[] a = getSubDetails(t);
             ((TextView) view.findViewById(getId((i - 1) * 4))).setText((t + " : " + a[0]));
             ((TextView) view.findViewById(getId(((i - 1) * 4) + 1))).setText(a[1]);
@@ -87,7 +87,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
             ((TextView) view.findViewById(getId(((i - 1) * 4) + 2))).setTextColor(getStatus(s) ?
                     Color.parseColor("#ff0000") : Color.parseColor("#00dd00"));
             ((TextView) view.findViewById(getId(((i - 1) * 4) + 3))).
-                    setText(getSubCode(Character.toString(rn.charAt(5)) + String.valueOf(k)));
+                    setText(getSubCode((j > 2 ? b : Character.toString(rn.charAt(5))) + String.valueOf(k)));
         }
         return view;
     }

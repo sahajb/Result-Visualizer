@@ -22,14 +22,6 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-/**
- * Workaround AppBarLayout.Behavior for https://issuetracker.google.com/66996774
- *
- * See https://gist.github.com/chrisbanes/8391b5adb9ee42180893300850ed02f2 for
- * example usage.
- *
- * Change the package name as you wish.
- */
 public class FixAppBarLayoutBehavior extends AppBarLayout.Behavior {
 
     public FixAppBarLayoutBehavior() {

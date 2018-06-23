@@ -6,9 +6,7 @@ import android.animation.ValueAnimator;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.Transformation;
 
 public final class AnimationUtils {
 
@@ -21,12 +19,12 @@ public final class AnimationUtils {
             final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             mLinearLayout.measure(widthSpec, heightSpec);
-            mAnimator = slideAnimator(mLinearLayout,0, mLinearLayout.getMeasuredHeight());
+            mAnimator = slideAnimator(mLinearLayout, 0, mLinearLayout.getMeasuredHeight());
             mAnimator.start();
             createRotateAnimator(buttonLayout, 0f, 180f).start();
         } else {
             int finalHeight = mLinearLayout.getHeight();
-            ValueAnimator mAnimator = slideAnimator(mLinearLayout,finalHeight, 0);
+            ValueAnimator mAnimator = slideAnimator(mLinearLayout, finalHeight, 0);
             mAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animator) {

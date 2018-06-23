@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,10 +22,12 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.util.regex.Pattern;
+
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,LoaderManager.LoaderCallbacks<JSONObject> {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<JSONObject> {
 
     private EditText getRn;
 
@@ -40,15 +40,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -59,11 +50,20 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         getRn = (EditText) findViewById(R.id.getrn);
         getRn.clearFocus();
+        getRn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
+            }
+        });
         loadResult = (Button) findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLoaderManager().initLoader(0,null,MainActivity.this);
+                if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(getRn.getText().toString()).matches())
+                    getLoaderManager().initLoader(0, null, MainActivity.this);
+                else
+                    Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -102,13 +102,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
 
         } else if (id == R.id.nav_about) {
-
+            startActivity(new Intent(MainActivity.this, AboutActivity.class));
         } else if (id == R.id.nav_docs) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://exam.dtu.ac.in/result.htm")));
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_git) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/sahajb")));
         } else if (id == R.id.nav_share) {
-
+            startActivity(new Intent(MainActivity.this, ShareActivity.class));
         } else if (id == R.id.nav_email) {
             Intent i = new Intent(Intent.ACTION_SENDTO).setData(Uri.parse("mailto:"));
             i.putExtra(Intent.EXTRA_SUBJECT, "Contacting regarding : ");
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             protected void onStartLoading() {
-                if(object!=null)
+                if (object != null)
                     deliverResult(object);
                 else
                     forceLoad();

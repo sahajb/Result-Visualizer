@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        tools:context=".AboutActivity">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
+            android:src="@drawable/ic_share_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="16dp"
+            android:text="Share"
+            android:textColor="@android:color/white"
+            android:textSize="35sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Not only can you view graphical representation of your performance across all semesters you can share them too ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Result Visualizer allows you to save graphs by using the share button given above in the Graph Tab of result ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  All the graphs are then saved in Gallery with their given names given storage permission is allowed ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="16dp"
+            android:text="Permission"
+            android:textColor="@android:color/white"
+            android:textSize="35sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Certain versions of Android require some permissions to be given at runtime instead of being allowed during installation ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Due to this you might be prompted to give the permission when you save the graphs but only the first time ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  The graphs will be saved as JPEG . However , until you don't give the permission no files will be saved to your Gallery ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="24dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:text="Happy Boasting !"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</ScrollView>

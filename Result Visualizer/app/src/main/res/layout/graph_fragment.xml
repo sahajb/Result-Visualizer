@@ -221,6 +221,9 @@
                         android:id="@+id/ex_r"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:clipChildren="false"
+                        android:paddingEnd="8dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/r">
 
@@ -296,6 +299,9 @@
                         android:id="@+id/ex_dr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:clipChildren="false"
+                        android:paddingEnd="8dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/dr">
 

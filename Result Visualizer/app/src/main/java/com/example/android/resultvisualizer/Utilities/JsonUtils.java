@@ -22,7 +22,7 @@ public final class JsonUtils {
         if (obj == null) {
             String ret = "";
             try {
-                InputStream inputStream = context.getResources().openRawResource(R.raw.fy);
+                InputStream inputStream = context.getResources().openRawResource(R.raw.ts);
                 if (inputStream != null) {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                     String receiveString;
