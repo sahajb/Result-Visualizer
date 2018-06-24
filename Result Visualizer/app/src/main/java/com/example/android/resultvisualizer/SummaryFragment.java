@@ -7,10 +7,14 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +28,7 @@ public class SummaryFragment extends Fragment {
 
     private String rn;
 
-    public static boolean isExpanded = false;
+    public static boolean isExpanded = true;
 
     public SummaryFragment() {
     }
@@ -35,7 +39,7 @@ public class SummaryFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("rn", s);
         fragment.setArguments(bundle);
-        isExpanded = false;
+        isExpanded = true;
         return fragment;
     }
 
@@ -59,7 +63,7 @@ public class SummaryFragment extends Fragment {
         final View buttonLayout = (View) view.findViewById(R.id.buttonm);
         final CardView cv = (CardView) view.findViewById(R.id.cvm);
         final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.expandableLayoutm);
-        isExpanded = false;
+        isExpanded = true;
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(isExpanded ? 180f : 0f);
         cv.setOnClickListener(new View.OnClickListener() {
@@ -89,5 +93,24 @@ public class SummaryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_result, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

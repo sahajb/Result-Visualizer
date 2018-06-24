@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,7 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
         super(context, 0, objects);
         rn = s;
         for (int i = 0; i < objects.size(); i++) {
-            expandState.append(i, false);
+            expandState.append(i, true);
         }
     }
 
@@ -45,8 +44,6 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
         JSONObject object = stats.getObject();
         int c = stats.getClr();
         int s = stats.getSub();
-        if (j > 2)
-            j = 2;
         ((TextView) view.findViewById(R.id.sem)).setText(("Sem - " + String.valueOf(j)));
         ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared :"));
         ((TextView) view.findViewById(R.id.clrn)).setText((String.valueOf(c) + "/" + String.valueOf(s)));
