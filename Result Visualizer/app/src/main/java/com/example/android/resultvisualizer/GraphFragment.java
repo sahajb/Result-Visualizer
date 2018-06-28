@@ -87,7 +87,7 @@ public class GraphFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment, container, false);
         rn = getArguments().getString("rn");
-        JSONObject object = jsonObjFromFile(getContext()).optJSONObject(rn);
+        JSONObject object = jsonObjFromFile().optJSONObject(rn);
         {
             gr = (LineChart) view.findViewById(R.id.graph_r);
             ((TextView) view.findViewById(R.id.r)).setText(("University Rank"));
@@ -149,7 +149,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(0);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(0) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(0, expandableLayout.getVisibility() != View.VISIBLE);
@@ -220,7 +220,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(1);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(1) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(1, expandableLayout.getVisibility() != View.VISIBLE);
@@ -282,7 +282,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(2);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(2) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(2, expandableLayout.getVisibility() != View.VISIBLE);
@@ -322,7 +322,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(3);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(3) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(3, expandableLayout.getVisibility() != View.VISIBLE);
@@ -380,9 +380,9 @@ public class GraphFragment extends Fragment {
                                 public void onClick(View v) {
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setDataAndType(FileProvider.getUriForFile(getContext(),
-                                            getActivity().getApplicationContext().getPackageName() + ".provider",
-                                            (new File("storage/emulated/0/DCIM/Credits Distribution.jpg"))), "image/*");
+                                    intent.setDataAndType(FileProvider.getUriForFile(getContext(), getActivity().
+                                            getApplicationContext().getPackageName() + ".provider", (new File(
+                                                    "storage/emulated/0/DCIM/Credits Distribution.jpg"))), "image/*");
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                     startActivity(intent);
                                 }

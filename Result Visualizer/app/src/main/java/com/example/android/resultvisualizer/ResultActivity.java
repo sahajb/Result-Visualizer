@@ -13,6 +13,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
+import com.example.android.resultvisualizer.Utilities.NotificationUtils;
+
 public class ResultActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;

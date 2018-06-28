@@ -45,7 +45,7 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
         int c = stats.getClr();
         int s = stats.getSub();
         ((TextView) view.findViewById(R.id.sem)).setText(("Sem - " + String.valueOf(j)));
-        ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared :"));
+        ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared"));
         ((TextView) view.findViewById(R.id.clrn)).setText((String.valueOf(c) + "/" + String.valueOf(s)));
         ((TextView) view.findViewById(R.id.clrn)).setTextColor(c != s ? Color.parseColor("#ff0000") :
                 Color.parseColor("#00dd00"));
@@ -67,7 +67,7 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
         final boolean isExpanded = expandState.get(position);
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
-        cv.setOnClickListener(new View.OnClickListener() {
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 expandState.put(position, expandableLayout.getVisibility() != View.VISIBLE);

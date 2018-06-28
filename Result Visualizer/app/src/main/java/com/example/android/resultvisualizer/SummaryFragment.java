@@ -45,7 +45,7 @@ public class SummaryFragment extends Fragment {
 
     private void init(View rootView) throws JSONException {
         rn = getArguments().getString("rn");
-        JSONObject object = jsonObjFromFile(getContext()).optJSONObject(rn);
+        JSONObject object = jsonObjFromFile().optJSONObject(rn);
         final ArrayList<Summary> list = new ArrayList<Summary>();
         for (int i = 1; i <= 3; i++)
             list.add(new Summary(object, i));
@@ -54,19 +54,18 @@ public class SummaryFragment extends Fragment {
         ((TextView) view.findViewById(R.id.t)).setText(("Student Details"));
         try {
             ((TextView) view.findViewById(R.id.name)).setText(object.getString("Name"));
+            ((TextView) view.findViewById(R.id.rn2)).setText(object.getString("Roll No(2)"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         ((TextView) view.findViewById(R.id.rn)).setText(rn);
-        ((TextView) view.findViewById(R.id.br)).setText(rn.charAt(7) == '/' ? rn.substring(5, 7)
-                : rn.substring(5, 8));
         final View buttonLayout = (View) view.findViewById(R.id.buttonm);
         final CardView cv = (CardView) view.findViewById(R.id.cvm);
         final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.expandableLayoutm);
         isExpanded = true;
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(isExpanded ? 180f : 0f);
-        cv.setOnClickListener(new View.OnClickListener() {
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 isExpanded = expandableLayout.getVisibility() != View.VISIBLE;

@@ -3,6 +3,10 @@ package com.example.android.resultvisualizer.Utilities;
 import com.example.android.resultvisualizer.R;
 
 public final class SubjectUtils {
+
+    private SubjectUtils(){
+    }
+
     private static String subCode(String s) {
         switch (s) {
             case "A1":

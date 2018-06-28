@@ -47,7 +47,7 @@ public class StatsFragment extends Fragment {
 
     private void init(View rootView) throws JSONException {
         rn = getArguments().getString("rn");
-        JSONObject object = jsonObjFromFile(getContext()).optJSONObject(rn);
+        JSONObject object = jsonObjFromFile().optJSONObject(rn);
         final ArrayList<Stats> list = new ArrayList<Stats>();
         int t = 0;
         for (int i = 1; i <= 3; i++) {
@@ -61,7 +61,7 @@ public class StatsFragment extends Fragment {
         StatsAdapter adapter = new StatsAdapter(getActivity(), list, rn);
         View view = getLayoutInflater().inflate(R.layout.stats, null);
         ((TextView) view.findViewById(R.id.sem)).setText(("Overall"));
-        ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared :"));
+        ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared"));
         ((TextView) view.findViewById(R.id.clrn)).setText((String.valueOf(t) + "/18"));
         ((TextView) view.findViewById(R.id.clrn)).setTextColor(t != 18 ? Color.parseColor("#ff0000") :
                 Color.parseColor("#00dd00"));
@@ -78,7 +78,7 @@ public class StatsFragment extends Fragment {
         isExpanded = true;
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(isExpanded ? 180f : 0f);
-        cv.setOnClickListener(new View.OnClickListener() {
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 isExpanded = expandableLayout.getVisibility() != View.VISIBLE;

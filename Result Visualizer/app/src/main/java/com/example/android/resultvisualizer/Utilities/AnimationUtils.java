@@ -10,6 +10,9 @@ import android.view.animation.LinearInterpolator;
 
 public final class AnimationUtils {
 
+    private AnimationUtils(){
+    }
+
     private static ValueAnimator mAnimator;
 
     private static void clicked(final ConstraintLayout mLinearLayout, final View buttonLayout) {

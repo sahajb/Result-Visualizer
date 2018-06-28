@@ -64,7 +64,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
         final boolean isExpanded = expandState.get(position);
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
-        cv.setOnClickListener(new View.OnClickListener() {
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 expandState.put(position, expandableLayout.getVisibility() != View.VISIBLE);

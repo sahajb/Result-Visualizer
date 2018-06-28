@@ -1,13 +1,12 @@
 package com.example.android.resultvisualizer;
 
-import android.annotation.SuppressLint;
 import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,22 +15,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.android.resultvisualizer.Utilities.JsonUtils;
 
 import org.json.JSONObject;
 
 import java.util.regex.Pattern;
-
-import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<JSONObject> {
 
     private EditText getRn;
 
+    private String rn;
+
     private Button loadResult;
+
+    private ProgressBar pb;
+
+    private LinearLayout parent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        pb = (ProgressBar) findViewById(R.id.pb);
+        parent = (LinearLayout) findViewById(R.id.parent);
         getRn = (EditText) findViewById(R.id.getrn);
         getRn.clearFocus();
         getRn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -56,14 +66,25 @@ public class MainActivity extends AppCompatActivity
                 getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
             }
         });
+        final LoaderManager manager = getLoaderManager();
         loadResult = (Button) findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(getRn.getText().toString()).matches())
-                    getLoaderManager().initLoader(0, null, MainActivity.this);
-                else
-                    Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
+                rn = getRn.getText().toString();
+                getRn.setText("");
+                NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+                if ((networkInfo != null && networkInfo.isConnected()) || JsonUtils.jsonValid()) {
+                    if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
+                        parent.setVisibility(View.INVISIBLE);
+                        pb.setVisibility(View.VISIBLE);
+                        manager.initLoader(0, null, MainActivity.this);
+                    } else
+                        Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Internet connection is not available",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -94,7 +115,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -120,47 +140,28 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<JSONObject> onCreateLoader(int id, final Bundle args) {
-        return new AsyncTaskLoader<JSONObject>(this) {
-            JSONObject object;
-
-            @Override
-            protected void onStartLoading() {
-                if (object != null)
-                    deliverResult(object);
-                else
-                    forceLoad();
-            }
-
-            @Override
-            public JSONObject loadInBackground() {
-                return jsonObjFromFile(getApplicationContext()).optJSONObject(getRn.getText().toString());
-            }
-
-            @Override
-            public void deliverResult(JSONObject jsonObject) {
-                object = jsonObject;
-                super.deliverResult(jsonObject);
-            }
-
-        };
+        return new JsonLoader(this, rn);
     }
 
     @Override
-    public void onLoadFinished(Loader<JSONObject> loader, JSONObject object) {
-        if (object == null) {
-            Toast.makeText(getApplicationContext(), "Please enter a valid Roll. No.", Toast.LENGTH_SHORT).show();
-            getRn.setText("");
-        } else
-            startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT,
-                    getRn.getText().toString()));
+    public void onLoadFinished(Loader<JSONObject> loader, JSONObject jsonObject) {
+        pb.setVisibility(View.GONE);
+        parent.setVisibility(View.VISIBLE);
+        if (jsonObject.length() == 0)
+            Toast.makeText(getApplicationContext(), "Server error occurred. Please try later.", Toast.LENGTH_SHORT).show();
+        else {
+            JSONObject object = jsonObject.optJSONObject(rn);
+            if (object == null)
+                new AlertDialogFragment().show(getSupportFragmentManager(), "dialog");
+            else
+                startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT, rn));
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<JSONObject> loader) {
-
     }
 
 }
