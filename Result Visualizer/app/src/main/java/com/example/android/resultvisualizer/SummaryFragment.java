@@ -1,6 +1,9 @@
 package com.example.android.resultvisualizer;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -16,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.resultvisualizer.Utilities.PrefUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,32 +29,39 @@ import java.util.ArrayList;
 import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
 
-public class SummaryFragment extends Fragment {
+public class SummaryFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private String rn;
 
     public static boolean isExpanded = true;
 
+    public static SharedPreferences preferences;
+
+    private JSONObject object = null;
+
+    SummaryAdapter adapter;
+
     public SummaryFragment() {
     }
 
-    public static SummaryFragment newInstance(String s) {
+    public static SummaryFragment newInstance(String s, Context context) {
         SummaryFragment fragment = new SummaryFragment();
         fragment.setRetainInstance(true);
         Bundle bundle = new Bundle();
         bundle.putString("rn", s);
         fragment.setArguments(bundle);
         isExpanded = true;
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return fragment;
     }
 
-    private void init(View rootView) throws JSONException {
+    private void init(View rootView) {
         rn = getArguments().getString("rn");
-        JSONObject object = jsonObjFromFile().optJSONObject(rn);
-        final ArrayList<Summary> list = new ArrayList<Summary>();
+        object = jsonObjFromFile().optJSONObject(rn);
+        ArrayList<Summary> list = new ArrayList<Summary>();
         for (int i = 1; i <= 3; i++)
             list.add(new Summary(object, i));
-        SummaryAdapter adapter = new SummaryAdapter(getActivity(), list, rn);
+        adapter = new SummaryAdapter(getActivity(), list, rn);
         View view = getLayoutInflater().inflate(R.layout.summary2, null);
         ((TextView) view.findViewById(R.id.t)).setText(("Student Details"));
         try {
@@ -73,7 +85,8 @@ public class SummaryFragment extends Fragment {
             }
         });
         ((ListView) rootView.findViewById(R.id.list)).addHeaderView(view,
-                null, false);
+                null, true);
+        ((ListView) rootView.findViewById(R.id.list)).setHeaderDividersEnabled(true);
         ((ListView) rootView.findViewById(R.id.list)).setAdapter(adapter);
     }
 
@@ -81,11 +94,7 @@ public class SummaryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.summary_list, container, false);
-        try {
-            init(rootView);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        init(rootView);
         return rootView;
     }
 
@@ -93,11 +102,20 @@ public class SummaryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result, menu);
+        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("highlight", true) ? "Disable" : "Enable") +
+                " Highlighting");
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -106,10 +124,20 @@ public class SummaryFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                PrefUtils.setHighlight(getContext());
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("highlight", true) ? "Disable" : "Enable") +
+                " Highlighting");
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    }
 }

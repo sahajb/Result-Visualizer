@@ -3,6 +3,8 @@ package com.example.android.resultvisualizer;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
+import com.example.android.resultvisualizer.Utilities.NotificationUtils;
+
 import org.json.JSONObject;
 
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
@@ -11,9 +13,12 @@ public class JsonLoader extends AsyncTaskLoader<JSONObject> {
 
     private String rn;
 
-    public JsonLoader(Context context, String s) {
+    private boolean bool;
+
+    public JsonLoader(Context context, String s, boolean b) {
         super(context);
         rn = s;
+        bool = b;
     }
 
     @Override
@@ -30,4 +35,10 @@ public class JsonLoader extends AsyncTaskLoader<JSONObject> {
             return new JSONObject();
     }
 
+    @Override
+    public void deliverResult(JSONObject data) {
+        super.deliverResult(data);
+        if (data.optJSONObject(rn) != null && bool)
+            NotificationUtils.notification(getContext(), rn);
+    }
 }

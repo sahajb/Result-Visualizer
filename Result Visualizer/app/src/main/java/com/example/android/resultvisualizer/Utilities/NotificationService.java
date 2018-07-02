@@ -4,6 +4,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import com.example.android.resultvisualizer.MainActivity;
+
 public class NotificationService extends IntentService {
 
     public NotificationService() {
@@ -13,9 +15,7 @@ public class NotificationService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         final String action = intent.getAction();
-        if(action.equals("dismiss"))
-            NotificationUtils.clearAllNotifications(this);
-        else if(action.equals("view"))
+        if (action.equals("dismiss"))
             NotificationUtils.clearAllNotifications(this);
     }
 }

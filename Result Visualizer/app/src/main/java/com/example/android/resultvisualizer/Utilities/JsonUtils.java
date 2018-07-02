@@ -58,7 +58,7 @@ public final class JsonUtils {
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
+            urlConnection.setConnectTimeout(10000);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
@@ -68,7 +68,7 @@ public final class JsonUtils {
                 Log.e("makeHttpRequest", "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e("makeHttpRequest", "Problem retrieving the JSON results.", e);
+            return "";
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -99,7 +99,7 @@ public final class JsonUtils {
     }
 
     public static boolean jsonValid() {
-        return obj != null;
+        return (obj != null) && (obj.length() != 0);
     }
 
 }

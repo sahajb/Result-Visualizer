@@ -29,14 +29,14 @@ import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onCl
 public class SummaryAdapter extends ArrayAdapter<Summary> {
 
     private SparseBooleanArray expandState = new SparseBooleanArray();
+
     private String rn;
 
-    public SummaryAdapter(@NonNull Context context, @NonNull ArrayList<Summary> objects, String s) {
-        super(context, 0, objects);
+    public SummaryAdapter(@NonNull Context context, @NonNull ArrayList<Summary> arrayList, String s) {
+        super(context, 0, arrayList);
         rn = s;
-        for (int i = 0; i < objects.size(); i++) {
+        for (int i = 0; i < arrayList.size(); i++)
             expandState.append(i, true);
-        }
     }
 
     @NonNull

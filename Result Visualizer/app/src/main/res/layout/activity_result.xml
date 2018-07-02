@@ -32,7 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
-            app:tabMaxWidth="0dp">
+            app:tabPaddingStart="-1dp"
+            app:tabPaddingEnd="-1dp">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem"

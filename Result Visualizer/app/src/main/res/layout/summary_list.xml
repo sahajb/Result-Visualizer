@@ -18,13 +18,14 @@
         android:layout_marginBottom="?attr/actionBarSize"
         android:background="#EEE"
         android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
+        android:divider="@drawable/divider"
+        android:dividerHeight="2px"
         android:drawSelectorOnTop="true"
         android:nestedScrollingEnabled="true"
         android:orientation="vertical"
-        android:paddingBottom="32dp"
-        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="16dp"
+        android:overScrollFooter="@android:color/transparent"
         android:scrollbarStyle="outsideOverlay" />
 
 </android.support.v4.widget.NestedScrollView>
