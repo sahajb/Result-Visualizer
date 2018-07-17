@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="fill_vertical"
-    android:background="#EEE"
+    android:background="#EEEEEE"
     android:clipToPadding="false"
     android:fillViewport="true"
     android:isScrollContainer="false"
@@ -16,16 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:background="#EEE"
+        android:background="#EEEEEE"
         android:clipToPadding="false"
         android:divider="@drawable/divider"
         android:dividerHeight="2px"
         android:drawSelectorOnTop="true"
         android:nestedScrollingEnabled="true"
         android:orientation="vertical"
+        android:overScrollFooter="@android:color/transparent"
         android:paddingBottom="24dp"
         android:paddingTop="16dp"
-        android:overScrollFooter="@android:color/transparent"
         android:scrollbarStyle="outsideOverlay" />
 
 </android.support.v4.widget.NestedScrollView>

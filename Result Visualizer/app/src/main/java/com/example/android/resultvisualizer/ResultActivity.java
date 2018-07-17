@@ -1,22 +1,18 @@
 package com.example.android.resultvisualizer;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.preference.PreferenceManager;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,16 +24,21 @@ public class ResultActivity extends AppCompatActivity {
 
     private static String rn;
 
+    private int q;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         if (getIntent().hasExtra(Intent.EXTRA_TEXT))
             rn = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+        if (getIntent().hasExtra("quality"))
+            q = getIntent().getIntExtra("quality", 50);
         AppBarLayout abl = findViewById(R.id.appbar);
         ((CoordinatorLayout.LayoutParams) abl.getLayoutParams()).setBehavior(new FixAppBarLayoutBehavior());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Result : " + rn.substring(5));
+        toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -56,22 +57,23 @@ public class ResultActivity extends AppCompatActivity {
         ((ImageView) newTab2.findViewById(R.id.img)).setImageResource(R.drawable.ic_graph_tab);
         tabLayout.getTabAt(2).setCustomView(newTab2);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager){
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
-                ((TextView)tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.BLACK);
-                ((ImageView)tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.BLACK,PorterDuff.Mode.SRC_IN);
+                ((TextView) tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.WHITE);
+                ((ImageView) tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 super.onTabUnselected(tab);
-                ((TextView)tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.WHITE);
-                ((ImageView)tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.WHITE,PorterDuff.Mode.SRC_IN);
+                ((TextView) tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.parseColor("#88FFFFFF"));
+                ((ImageView) tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.parseColor("#88FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
         });
         mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setCurrentItem(2);
         mViewPager.setCurrentItem(1);
     }
 
@@ -87,7 +89,7 @@ public class ResultActivity extends AppCompatActivity {
             else if (position == 1)
                 return SummaryFragment.newInstance(rn, getApplicationContext());
             else
-                return GraphFragment.newInstance(rn, getApplicationContext());
+                return GraphFragment.newInstance(rn, getApplicationContext(), q);
         }
 
         @Override

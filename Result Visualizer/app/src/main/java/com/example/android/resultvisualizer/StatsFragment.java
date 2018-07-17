@@ -1,26 +1,18 @@
 package com.example.android.resultvisualizer;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.android.resultvisualizer.Utilities.PrefUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,13 +23,9 @@ import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onCl
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getStatus;
 
-public class StatsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private String rn;
+public class StatsFragment extends Fragment {
 
     public static boolean isExpanded = true;
-
-    public static SharedPreferences preferences;
 
     public StatsFragment() {
     }
@@ -49,29 +37,30 @@ public class StatsFragment extends Fragment implements SharedPreferences.OnShare
         bundle.putString("rn", s);
         fragment.setArguments(bundle);
         isExpanded = true;
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return fragment;
     }
 
     private void init(View rootView) throws JSONException {
-        rn = getArguments().getString("rn");
+        String rn = getArguments().getString("rn");
         JSONObject object = jsonObjFromFile().optJSONObject(rn);
+        JSONObject info = jsonObjFromFile().optJSONObject("meta-data");
+        int l = info.getInt("Sems");
         final ArrayList<Stats> list = new ArrayList<Stats>();
         int t = 0;
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= l; i++) {
             int c = 6;
             for (int j = ((6 * i) - 5); j <= (6 * i); j++)
                 if (getStatus(object.getString(String.valueOf(j))))
                     c -= 1;
             t += c;
-            list.add(new Stats(object, i, c, i > 2 ? 23 : 21, 6));
+            list.add(new Stats(object, i, c, info.getInt("C" + String.valueOf(i)), 6));
         }
         StatsAdapter adapter = new StatsAdapter(getActivity(), list, rn);
         View view = getLayoutInflater().inflate(R.layout.stats, null);
         ((TextView) view.findViewById(R.id.sem)).setText(("Overall"));
         ((TextView) view.findViewById(R.id.clr)).setText(("Subjects cleared"));
-        ((TextView) view.findViewById(R.id.clrn)).setText((String.valueOf(t) + "/18"));
-        ((TextView) view.findViewById(R.id.clrn)).setTextColor(t != 18 ? Color.parseColor("#ff0000") :
+        ((TextView) view.findViewById(R.id.clrn)).setText((String.valueOf(t) + "/" + String.valueOf(l * 6)));
+        ((TextView) view.findViewById(R.id.clrn)).setTextColor(t != (l * 6) ? Color.parseColor("#ff0000") :
                 Color.parseColor("#00dd00"));
         ((TextView) view.findViewById(R.id.s1)).setText(("University Rank"));
         ((TextView) view.findViewById(R.id.s2)).setText(("Branch Rank"));
@@ -79,7 +68,7 @@ public class StatsFragment extends Fragment implements SharedPreferences.OnShare
         ((TextView) view.findViewById(R.id.gpa)).setText(object.getString("SGPA"));
         ((TextView) view.findViewById(R.id.c1)).setText(object.getString("R"));
         ((TextView) view.findViewById(R.id.c2)).setText(object.getString("DR"));
-        ((TextView) view.findViewById(R.id.c3)).setText((object.getString("TC") + "/65"));
+        ((TextView) view.findViewById(R.id.c3)).setText((object.getString("TC") + "/" + String.valueOf(info.getInt("TC"))));
         final View buttonLayout = (View) view.findViewById(R.id.button);
         final CardView cv = (CardView) view.findViewById(R.id.cv);
         final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.expandableLayout);
@@ -110,49 +99,4 @@ public class StatsFragment extends Fragment implements SharedPreferences.OnShare
         return rootView;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        preferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        preferences.unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_result, menu);
-        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("highlight", true) ? "Disable" : "Enable") +
-                " Highlighting");
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                PrefUtils.setHighlight(getContext());
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("highlight", true) ? "Disable" : "Enable") +
-                " Highlighting");
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("highlight")) {
-            getActivity().invalidateOptionsMenu();
-        }
-    }
 }

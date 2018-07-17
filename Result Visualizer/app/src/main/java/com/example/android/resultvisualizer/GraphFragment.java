@@ -59,8 +59,6 @@ import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFr
 
 public class GraphFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private String rn;
-
     private static SparseBooleanArray expandState = new SparseBooleanArray();
 
     private LineChart gd;
@@ -76,11 +74,12 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
     public GraphFragment() {
     }
 
-    public static GraphFragment newInstance(String s, Context context) {
+    public static GraphFragment newInstance(String s, Context context, int q) {
         GraphFragment fragment = new GraphFragment();
         fragment.setRetainInstance(true);
         Bundle bundle = new Bundle();
         bundle.putString("rn", s);
+        bundle.putInt("quality", q);
         fragment.setArguments(bundle);
         for (int i = 0; i < 4; i++)
             expandState.append(i, true);
@@ -92,20 +91,20 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment, container, false);
-        rn = getArguments().getString("rn");
+        String rn = getArguments().getString("rn");
         JSONObject object = jsonObjFromFile().optJSONObject(rn);
+        JSONObject info = jsonObjFromFile().optJSONObject("meta-data");
         {
             gr = (LineChart) view.findViewById(R.id.graph_r);
             ((TextView) view.findViewById(R.id.r)).setText(("University Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
-            int a = 0, b = 0, c = 0;
+            int d = 0, l = 0;
             try {
-                a = Integer.valueOf(object.getString("R0"));
-                b = Integer.valueOf(object.getString("R1"));
-                c = Integer.valueOf(object.getString("R2"));
-                entries.add(new Entry(1, a));
-                entries.add(new Entry(2, b));
-                entries.add(new Entry(3, c));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++) {
+                    entries.add(new Entry(i + 1, Integer.valueOf(object.getString("R" + String.valueOf(i)))));
+                    d = Math.max(d, Integer.valueOf(object.getString("R" + String.valueOf(i))));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -119,7 +118,9 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             dataSet.setValueTextSize(10f);
             dataSet.setHighLightColor(Color.BLACK);
             dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -149,7 +150,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gr.setTouchEnabled(preferences.getBoolean("touch", true));
             gr.getAxisRight().setEnabled(false);
             gr.getAxisLeft().setAxisMinimum(0);
-            int d = ((Math.max(a, Math.max(b, c)) + 50) / 100) + 1;
+            d = ((d + 20) / 100) + 1;
             gr.getAxisLeft().setAxisMaximum(Math.min(1800, d * 100));
             gr.getAxisLeft().setAxisLineWidth(1f);
             gr.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
@@ -174,14 +175,13 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gd = (LineChart) view.findViewById(R.id.graph_dr);
             ((TextView) view.findViewById(R.id.dr)).setText(("Branch Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
-            int a = 0, b = 0, c = 0;
+            int d = 0, l = 0;
             try {
-                a = Integer.valueOf(object.getString("DR0"));
-                b = Integer.valueOf(object.getString("DR1"));
-                c = Integer.valueOf(object.getString("DR2"));
-                entries.add(new Entry(1, a));
-                entries.add(new Entry(2, b));
-                entries.add(new Entry(3, c));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++) {
+                    entries.add(new Entry(i + 1, Integer.valueOf(object.getString("DR" + String.valueOf(i)))));
+                    d = Math.max(d, Integer.valueOf(object.getString("DR" + String.valueOf(i))));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -195,7 +195,9 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             dataSet.setValueTextSize(10f);
             dataSet.setHighLightColor(Color.BLACK);
             dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -225,8 +227,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gd.setTouchEnabled(preferences.getBoolean("touch", true));
             gd.getAxisRight().setEnabled(false);
             gd.getAxisLeft().setAxisMinimum(0);
-            int d = ((Math.max(a, Math.max(b, c)) + 5) / 10) + 1;
-            gd.getAxisLeft().setAxisMaximum(d*10);
+            d = ((d + 2) / 10) + 1;
+            gd.getAxisLeft().setAxisMaximum(d * 10);
             gd.getAxisLeft().setAxisLineWidth(1f);
             gd.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gd.getAxisLeft().setTextSize(12f);
@@ -250,10 +252,11 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gg = (BarChart) view.findViewById(R.id.graph_gpa);
             ((TextView) view.findViewById(R.id.gpa)).setText(("GPA Distribution"));
             ArrayList<BarEntry> entries = new ArrayList<>();
+            int l = 0;
             try {
-                entries.add(new BarEntry(1, Float.valueOf(object.getString("SGPA(0)"))));
-                entries.add(new BarEntry(2, Float.valueOf(object.getString("SGPA(1)"))));
-                entries.add(new BarEntry(3, Float.valueOf(object.getString("SGPA(2)"))));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++)
+                    entries.add(new BarEntry(i + 1, Float.valueOf(object.getString("SGPA(" + String.valueOf(i) + ")"))));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -276,7 +279,9 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             xAxis.setDrawGridLines(false);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setGranularity(1f);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -313,9 +318,10 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             ((TextView) view.findViewById(R.id.cred)).setText(("Credit Distribution"));
             ArrayList<PieEntry> entries = new ArrayList<>();
             try {
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(0)")), "Sem - 1"));
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(1)")), "Sem - 2"));
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(2)")), "Sem - 3"));
+                int l = info.getInt("Sems");
+                for (int i = 0; i < l; i++)
+                    entries.add(new PieEntry(Float.valueOf(object.getString("TC(" + String.valueOf(i) + ")")),
+                            "Sem - " + String.valueOf(i + 1)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -369,7 +375,6 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result, menu);
         MenuItem item = menu.findItem(R.id.action_save);
-        item.setVisible(true);
         menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("touch", true) ? "Disable" : "Enable") +
                 " Graph Touch");
         super.onCreateOptionsMenu(menu, inflater);
@@ -396,10 +401,10 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             case 1:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    gc.saveToGallery("Credits Distribution.jpg", 50);
-                    gd.saveToGallery("Branch Rank.jpg", 50);
-                    gr.saveToGallery("University Rank.jpg", 50);
-                    gg.saveToGallery("GPA Distribution.jpg", 50);
+                    gc.saveToGallery("Credits Distribution.jpg", getArguments().getInt("quality", 50));
+                    gd.saveToGallery("Branch Rank.jpg", getArguments().getInt("quality", 50));
+                    gr.saveToGallery("University Rank.jpg", getArguments().getInt("quality", 50));
+                    gg.saveToGallery("GPA Distribution.jpg", getArguments().getInt("quality", 50));
                     Snackbar.make(getActivity().findViewById(android.R.id.content), "Graphs saved in Gallery", Snackbar.LENGTH_LONG).
                             setAction("View", new View.OnClickListener() {
                                 @Override
@@ -408,7 +413,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.setDataAndType(FileProvider.getUriForFile(getContext(), getActivity().
                                             getApplicationContext().getPackageName() + ".provider", (new File(
-                                            "storage/emulated/0/DCIM/Credits Distribution.jpg"))), "image/*");
+                                            "storage/emulated/0/DCIM/GPA Distribution.jpg"))), "image/*");
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                     startActivity(intent);
                                 }

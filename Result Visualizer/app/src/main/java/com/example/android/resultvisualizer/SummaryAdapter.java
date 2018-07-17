@@ -18,12 +18,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getId;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getStatus;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getSubCode;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getSubDetails;
-
-import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 
 
 public class SummaryAdapter extends ArrayAdapter<Summary> {

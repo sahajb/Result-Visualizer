@@ -20,7 +20,7 @@ public final class JsonUtils {
 
     private static JSONObject obj = null;
 
-    private static final String URL = "https://gist.githubusercontent.com/sahajb/9b7f340d40094928039ac664141ac865/raw/336ec1f7c0ce673f998d7f551a345ab31271d5d8/Ts.json";
+    private static final String URL = "https://gist.githubusercontent.com/sahajb/b5d41ea86f03c13b4d2658238fe5d5de/raw/ec6bd2b9bd56907264850d00f419ef5374d0df68/ts1.json";
 
     private static JSONObject buildJsonStr() {
         if (obj == null) {

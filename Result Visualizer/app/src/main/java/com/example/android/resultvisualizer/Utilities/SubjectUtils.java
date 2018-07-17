@@ -4,7 +4,7 @@ import com.example.android.resultvisualizer.R;
 
 public final class SubjectUtils {
 
-    private SubjectUtils(){
+    private SubjectUtils() {
     }
 
     private static String subCode(String s) {

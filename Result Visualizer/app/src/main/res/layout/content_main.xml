@@ -31,19 +31,11 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp">
 
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingTop="24dp"
-                android:src="@drawable/ic_launcher" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed"
-                android:paddingTop="8dp"
+                android:paddingTop="24dp"
                 android:text="Welcome To"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
@@ -52,19 +44,28 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="sans-serif-smallcaps"
+                android:paddingTop="8dp"
                 android:text="Result Visualizer"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
+                android:textColor="#26a69a"
                 android:textSize="32sp" />
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                app:srcCompat="@drawable/ic_launcher" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-condensed"
-                android:paddingTop="16dp"
-                android:text="Enter your First year Roll. no."
                 android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="Enter your First Year Roll No."
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="22sp" />
@@ -72,7 +73,9 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="16dp">
+                android:layout_marginTop="8dp"
+                android:background="#E9E9E9"
+                android:paddingTop="8dp">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/getrn"
@@ -86,7 +89,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:minHeight="?listPreferredItemHeight"
-                    android:text="2016/A3/438" />
+                    android:padding="12dp" />
 
             </android.support.design.widget.TextInputLayout>
 

@@ -10,7 +10,7 @@ import android.view.animation.LinearInterpolator;
 
 public final class AnimationUtils {
 
-    private AnimationUtils(){
+    private AnimationUtils() {
     }
 
     private static ValueAnimator mAnimator;

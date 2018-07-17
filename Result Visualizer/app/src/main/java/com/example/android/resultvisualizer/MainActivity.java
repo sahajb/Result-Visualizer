@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity
                 getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
             }
         });
-        preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final LoaderManager manager = getLoaderManager();
         loadResult = (Button) findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
@@ -96,11 +97,11 @@ public class MainActivity extends AppCompatActivity
             if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
                 parent.setVisibility(View.INVISIBLE);
                 pb.setVisibility(View.VISIBLE);
-                Loader<JSONObject> loader=manager.getLoader(0);
-                if(loader==null)
+                Loader<JSONObject> loader = manager.getLoader(0);
+                if (loader == null)
                     manager.initLoader(0, null, MainActivity.this);
                 else
-                    manager.restartLoader(0,null,MainActivity.this);
+                    manager.restartLoader(0, null, MainActivity.this);
             } else
                 Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
         } else {
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<JSONObject> onCreateLoader(int id, final Bundle args) {
-        return new JsonLoader(this, rn,preferences.getBoolean("notification",true));
+        return new JsonLoader(this, rn, preferences.getBoolean("notification", true));
     }
 
     @Override
@@ -184,8 +185,7 @@ public class MainActivity extends AppCompatActivity
         if (jsonObject.length() == 0)
             error();
         else {
-            JSONObject object = jsonObject.optJSONObject(rn);
-            if (object == null)
+            if (jsonObject.optJSONObject(rn) == null)
                 invalid();
             else
                 valid();
@@ -197,7 +197,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void valid() {
-        startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT, rn));
+        startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT, rn).
+                putExtra("quality", Integer.parseInt(preferences.getString("quality", "50"))));
     }
 
     public void invalid() {
