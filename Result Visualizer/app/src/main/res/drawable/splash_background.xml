@@ -2,9 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/gray" />
     <item
+        android:width="160dp"
+        android:height="160dp"
         android:gravity="center">
-        <bitmap
-            android:src="@drawable/ic_launcher_result_visualizer"
-            android:gravity="center"/>
+        <nine-patch
+            android:gravity="center"
+            android:src="@drawable/icon_launcher" />
     </item>
 </layer-list>

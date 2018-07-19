@@ -18,25 +18,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getId;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getStatus;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getSubCode;
 import static com.example.android.resultvisualizer.Utilities.SubjectUtils.getSubDetails;
 
-import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
-
 
 public class SummaryAdapter extends ArrayAdapter<Summary> {
 
     private SparseBooleanArray expandState = new SparseBooleanArray();
+
     private String rn;
 
-    public SummaryAdapter(@NonNull Context context, @NonNull ArrayList<Summary> objects, String s) {
-        super(context, 0, objects);
+    public SummaryAdapter(@NonNull Context context, @NonNull ArrayList<Summary> arrayList, String s) {
+        super(context, 0, arrayList);
         rn = s;
-        for (int i = 0; i < objects.size(); i++) {
+        for (int i = 0; i < arrayList.size(); i++)
             expandState.append(i, true);
-        }
     }
 
     @NonNull
@@ -64,7 +63,7 @@ public class SummaryAdapter extends ArrayAdapter<Summary> {
         final boolean isExpanded = expandState.get(position);
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
-        cv.setOnClickListener(new View.OnClickListener() {
+        buttonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 expandState.put(position, expandableLayout.getVisibility() != View.VISIBLE);

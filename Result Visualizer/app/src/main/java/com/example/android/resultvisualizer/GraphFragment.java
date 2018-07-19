@@ -1,10 +1,13 @@
 package com.example.android.resultvisualizer;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -23,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.resultvisualizer.Utilities.PrefUtils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -53,9 +57,7 @@ import java.util.ArrayList;
 import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
 
-public class GraphFragment extends Fragment {
-
-    private String rn;
+public class GraphFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static SparseBooleanArray expandState = new SparseBooleanArray();
 
@@ -67,18 +69,21 @@ public class GraphFragment extends Fragment {
 
     private PieChart gc;
 
+    public static SharedPreferences preferences;
+
     public GraphFragment() {
     }
 
-    public static GraphFragment newInstance(String s) {
+    public static GraphFragment newInstance(String s, Context context, int q) {
         GraphFragment fragment = new GraphFragment();
         fragment.setRetainInstance(true);
         Bundle bundle = new Bundle();
         bundle.putString("rn", s);
+        bundle.putInt("quality", q);
         fragment.setArguments(bundle);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
             expandState.append(i, true);
-        }
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return fragment;
     }
 
@@ -86,16 +91,20 @@ public class GraphFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment, container, false);
-        rn = getArguments().getString("rn");
-        JSONObject object = jsonObjFromFile(getContext()).optJSONObject(rn);
+        String rn = getArguments().getString("rn");
+        JSONObject object = jsonObjFromFile().optJSONObject(rn);
+        JSONObject info = jsonObjFromFile().optJSONObject("meta-data");
         {
             gr = (LineChart) view.findViewById(R.id.graph_r);
             ((TextView) view.findViewById(R.id.r)).setText(("University Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
+            int d = 0, l = 0;
             try {
-                entries.add(new Entry(1, Integer.valueOf(object.getString("R0"))));
-                entries.add(new Entry(2, Integer.valueOf(object.getString("R1"))));
-                entries.add(new Entry(3, Integer.valueOf(object.getString("R2"))));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++) {
+                    entries.add(new Entry(i + 1, Integer.valueOf(object.getString("R" + String.valueOf(i)))));
+                    d = Math.max(d, Integer.valueOf(object.getString("R" + String.valueOf(i))));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -109,7 +118,9 @@ public class GraphFragment extends Fragment {
             dataSet.setValueTextSize(10f);
             dataSet.setHighLightColor(Color.BLACK);
             dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -136,10 +147,11 @@ public class GraphFragment extends Fragment {
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setGranularity(1f);
             xAxis.setValueFormatter(formatter);
-            gr.setTouchEnabled(true);
+            gr.setTouchEnabled(preferences.getBoolean("touch", true));
             gr.getAxisRight().setEnabled(false);
             gr.getAxisLeft().setAxisMinimum(0);
-            gr.getAxisLeft().setAxisMaximum(1800);
+            d = ((d + 20) / 100) + 1;
+            gr.getAxisLeft().setAxisMaximum(Math.min(1800, d * 100));
             gr.getAxisLeft().setAxisLineWidth(1f);
             gr.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gr.getAxisLeft().setTextSize(12f);
@@ -149,7 +161,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(0);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(0) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(0, expandableLayout.getVisibility() != View.VISIBLE);
@@ -163,10 +175,13 @@ public class GraphFragment extends Fragment {
             gd = (LineChart) view.findViewById(R.id.graph_dr);
             ((TextView) view.findViewById(R.id.dr)).setText(("Branch Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
+            int d = 0, l = 0;
             try {
-                entries.add(new Entry(1, Integer.valueOf(object.getString("DR0"))));
-                entries.add(new Entry(2, Integer.valueOf(object.getString("DR1"))));
-                entries.add(new Entry(3, Integer.valueOf(object.getString("DR2"))));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++) {
+                    entries.add(new Entry(i + 1, Integer.valueOf(object.getString("DR" + String.valueOf(i)))));
+                    d = Math.max(d, Integer.valueOf(object.getString("DR" + String.valueOf(i))));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -180,7 +195,9 @@ public class GraphFragment extends Fragment {
             dataSet.setValueTextSize(10f);
             dataSet.setHighLightColor(Color.BLACK);
             dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -207,10 +224,11 @@ public class GraphFragment extends Fragment {
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setGranularity(1f);
             xAxis.setValueFormatter(formatter);
-            gd.setTouchEnabled(true);
+            gd.setTouchEnabled(preferences.getBoolean("touch", true));
             gd.getAxisRight().setEnabled(false);
             gd.getAxisLeft().setAxisMinimum(0);
-            gd.getAxisLeft().setAxisMaximum(100);
+            d = ((d + 2) / 10) + 1;
+            gd.getAxisLeft().setAxisMaximum(d * 10);
             gd.getAxisLeft().setAxisLineWidth(1f);
             gd.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gd.getAxisLeft().setTextSize(12f);
@@ -220,7 +238,7 @@ public class GraphFragment extends Fragment {
             final boolean isExpanded = expandState.get(1);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(1) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(1, expandableLayout.getVisibility() != View.VISIBLE);
@@ -234,10 +252,11 @@ public class GraphFragment extends Fragment {
             gg = (BarChart) view.findViewById(R.id.graph_gpa);
             ((TextView) view.findViewById(R.id.gpa)).setText(("GPA Distribution"));
             ArrayList<BarEntry> entries = new ArrayList<>();
+            int l = 0;
             try {
-                entries.add(new BarEntry(1, Float.valueOf(object.getString("SGPA(0)"))));
-                entries.add(new BarEntry(2, Float.valueOf(object.getString("SGPA(1)"))));
-                entries.add(new BarEntry(3, Float.valueOf(object.getString("SGPA(2)"))));
+                l = info.getInt("Sems");
+                for (int i = 0; i < l; i++)
+                    entries.add(new BarEntry(i + 1, Float.valueOf(object.getString("SGPA(" + String.valueOf(i) + ")"))));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -260,7 +279,9 @@ public class GraphFragment extends Fragment {
             xAxis.setDrawGridLines(false);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setGranularity(1f);
-            final String[] lab = new String[]{"Sem-1", "Sem-2", "Sem-3"};
+            final String[] lab = new String[l];
+            for (int i = 0; i < l; i++)
+                lab[i] = "Sem-" + String.valueOf(i + 1);
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -275,14 +296,14 @@ public class GraphFragment extends Fragment {
             gg.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gg.getAxisLeft().setTextSize(12f);
             gg.getAxisLeft().setLabelCount(11, true);
-            gg.setTouchEnabled(true);
+            gg.setTouchEnabled(preferences.getBoolean("touch", true));
             final View buttonLayout = (View) view.findViewById(R.id.button_gpa);
             final CardView cv = (CardView) view.findViewById(R.id.cv_gpa);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_gpa);
             final boolean isExpanded = expandState.get(2);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(2) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(2, expandableLayout.getVisibility() != View.VISIBLE);
@@ -297,9 +318,10 @@ public class GraphFragment extends Fragment {
             ((TextView) view.findViewById(R.id.cred)).setText(("Credit Distribution"));
             ArrayList<PieEntry> entries = new ArrayList<>();
             try {
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(0)")), "Sem - 1"));
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(1)")), "Sem - 2"));
-                entries.add(new PieEntry(Integer.valueOf(object.getString("TC(2)")), "Sem - 3"));
+                int l = info.getInt("Sems");
+                for (int i = 0; i < l; i++)
+                    entries.add(new PieEntry(Float.valueOf(object.getString("TC(" + String.valueOf(i) + ")")),
+                            "Sem - " + String.valueOf(i + 1)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -316,13 +338,14 @@ public class GraphFragment extends Fragment {
             data.setValueFormatter(valueFormatter);
             gc.setData(data);
             gc.getDescription().setEnabled(false);
+            gc.setTouchEnabled(preferences.getBoolean("touch", true));
             final View buttonLayout = (View) view.findViewById(R.id.button_cred);
             final CardView cv = (CardView) view.findViewById(R.id.cv_cred);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_cred);
             final boolean isExpanded = expandState.get(3);
             expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(3) ? 180f : 0f);
-            cv.setOnClickListener(new View.OnClickListener() {
+            buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     expandState.put(3, expandableLayout.getVisibility() != View.VISIBLE);
@@ -339,13 +362,21 @@ public class GraphFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result, menu);
         MenuItem item = menu.findItem(R.id.action_save);
-        item.setVisible(true);
+        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("touch", true) ? "Disable" : "Enable") +
+                " Graph Touch");
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -358,7 +389,7 @@ public class GraphFragment extends Fragment {
                 return true;
 
             case R.id.action_settings:
-                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                PrefUtils.setTouch(getContext());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -370,19 +401,19 @@ public class GraphFragment extends Fragment {
             case 1:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    gc.saveToGallery("Credits Distribution.jpg", 50);
-                    gd.saveToGallery("Branch Rank.jpg", 50);
-                    gr.saveToGallery("University Rank.jpg", 50);
-                    gg.saveToGallery("GPA Distribution.jpg", 50);
+                    gc.saveToGallery("Credits Distribution.jpg", getArguments().getInt("quality", 50));
+                    gd.saveToGallery("Branch Rank.jpg", getArguments().getInt("quality", 50));
+                    gr.saveToGallery("University Rank.jpg", getArguments().getInt("quality", 50));
+                    gg.saveToGallery("GPA Distribution.jpg", getArguments().getInt("quality", 50));
                     Snackbar.make(getActivity().findViewById(android.R.id.content), "Graphs saved in Gallery", Snackbar.LENGTH_LONG).
                             setAction("View", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setDataAndType(FileProvider.getUriForFile(getContext(),
-                                            getActivity().getApplicationContext().getPackageName() + ".provider",
-                                            (new File("storage/emulated/0/DCIM/Credits Distribution.jpg"))), "image/*");
+                                    intent.setDataAndType(FileProvider.getUriForFile(getContext(), getActivity().
+                                            getApplicationContext().getPackageName() + ".provider", (new File(
+                                            "storage/emulated/0/DCIM/GPA Distribution.jpg"))), "image/*");
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                     startActivity(intent);
                                 }
@@ -392,6 +423,24 @@ public class GraphFragment extends Fragment {
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("touch", true) ? "Disable" : "Enable") +
+                " Graph Touch");
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("touch")) {
+            gc.setTouchEnabled(sharedPreferences.getBoolean(key, true));
+            gr.setTouchEnabled(sharedPreferences.getBoolean(key, true));
+            gd.setTouchEnabled(sharedPreferences.getBoolean(key, true));
+            gg.setTouchEnabled(sharedPreferences.getBoolean(key, true));
+            getActivity().invalidateOptionsMenu();
         }
     }
 }

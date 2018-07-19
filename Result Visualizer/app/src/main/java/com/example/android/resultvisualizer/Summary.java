@@ -8,6 +8,7 @@ public class Summary {
 
     private int position;
 
+
     public Summary(JSONObject jsonObject, int i) {
         object = jsonObject;
         position = i;

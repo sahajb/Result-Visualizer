@@ -1,16 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.android.resultvisualizer.ResultActivity">
     <item
         android:id="@+id/action_save"
-        android:title="Save"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_share_white_24dp"
-        android:visible="false"/>
+        android:title="Save"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/action_settings" />
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
 </menu>

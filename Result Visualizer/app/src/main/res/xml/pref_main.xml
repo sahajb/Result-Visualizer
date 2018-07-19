@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:summary="Notifications"
+        android:title="Notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notification"
+            android:summaryOff="You will not be notified"
+            android:summaryOn="You will be notified"
+            android:title="Show Notifications" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="Graphs"
+        android:title="Graphs">
+        <EditTextPreference
+            android:defaultValue="50"
+            android:inputType="numberDecimal"
+            android:key="quality"
+            android:selectAllOnFocus="true"
+            android:title="Saved Images Quality ( 0 - 100 )" />
+    </PreferenceCategory>
+</PreferenceScreen>

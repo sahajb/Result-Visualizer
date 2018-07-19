@@ -10,6 +10,5 @@
     <string name="title_activity_result">Result</string>
     <string name="tab_text_1">Stats</string>
     <string name="tab_text_2">Summary</string>
-    <string name="tab_text_3">Graph</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="tab_text_3">Graphs</string>
 </resources>
