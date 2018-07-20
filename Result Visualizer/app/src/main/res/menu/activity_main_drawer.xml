@@ -4,29 +4,36 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info_black"
-            android:title="About" />
-        <item
-            android:id="@+id/nav_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Share" />
+        <item android:title="Sources">
+            <menu>
+                <item
+                    android:id="@+id/nav_docs"
+                    android:icon="@drawable/ic_insert_drive_file_black"
+                    android:title="Documents" />
+                <item
+                    android:id="@+id/nav_git"
+                    android:icon="@drawable/ic_github"
+                    android:title="Github" />
+            </menu>
+        </item>
     </group>
 
-    <item android:title="Sources">
+    <item android:title="Support">
         <menu>
             <item
-                android:id="@+id/nav_docs"
-                android:icon="@drawable/ic_insert_drive_file_black"
-                android:title="Documents" />
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help_black_24dp"
+                android:title="Help" />
             <item
-                android:id="@+id/nav_git"
-                android:icon="@drawable/ic_github"
-                android:title="Github" />
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_black"
+                android:title="About" />
         </menu>
     </item>
-
 
     <item android:title="Communicate">
         <menu>

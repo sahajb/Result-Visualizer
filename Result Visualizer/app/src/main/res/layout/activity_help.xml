@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        tools:context=".AboutActivity">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="16dp"
+            android:src="@drawable/ic_help_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="16dp"
+            android:text="About"
+            android:textColor="@android:color/white"
+            android:textSize="35sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Analyze , Explore and Visualize your Result to improve and achieve an even better result ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  View detailed and comprehensive reports along with graphical representation of your performance across all semesters ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Data has been obtained from PDF ' s uploaded by DTU ( Delhi Technological University ) ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  Only those students who have participated in all semesters have their records included ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:text="\u2022  As of now records of only 2016 batch are available . More batches records will be included soon ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingTop="16dp"
+            android:text="Navigation"
+            android:textColor="@android:color/white"
+            android:textSize="35sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:drawableLeft="@drawable/ic_insert_drive_file_white"
+            android:drawablePadding="8dp"
+            android:paddingTop="16dp"
+            android:text="Directs you to the official site containing result documents . Discrepancies should be first taken up with DTU ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:drawableLeft="@drawable/ic_mail_white"
+            android:drawablePadding="8dp"
+            android:minLines="2"
+            android:paddingTop="16dp"
+            android:text="Send your queries , discrepancies and compliments to our official e-mail . Discrepancies will only be considered if they are first confirmed on the site ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:drawableLeft="@drawable/ic_action_name"
+            android:drawablePadding="8dp"
+            android:paddingTop="16dp"
+            android:text="Directs you to the Github repository  containing the code for this project ."
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:drawableLeft="@drawable/ic_share_white"
+            android:drawablePadding="8dp"
+            android:paddingTop="16dp"
+            android:text="Walks you through on how to share the graphical representation of your results ."
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</ScrollView>

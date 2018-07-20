@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.CardView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -156,10 +155,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gr.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gr.getAxisLeft().setTextSize(12f);
             final View buttonLayout = (View) view.findViewById(R.id.button_r);
-            final CardView cv = (CardView) view.findViewById(R.id.cv_r);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_r);
-            final boolean isExpanded = expandState.get(0);
-            expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            expandableLayout.setVisibility(expandState.get(0) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(0) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -233,10 +230,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gd.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gd.getAxisLeft().setTextSize(12f);
             final View buttonLayout = (View) view.findViewById(R.id.button_dr);
-            final CardView cv = (CardView) view.findViewById(R.id.cv_dr);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_dr);
-            final boolean isExpanded = expandState.get(1);
-            expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            expandableLayout.setVisibility(expandState.get(1) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(1) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -298,10 +293,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gg.getAxisLeft().setLabelCount(11, true);
             gg.setTouchEnabled(preferences.getBoolean("touch", true));
             final View buttonLayout = (View) view.findViewById(R.id.button_gpa);
-            final CardView cv = (CardView) view.findViewById(R.id.cv_gpa);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_gpa);
-            final boolean isExpanded = expandState.get(2);
-            expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            expandableLayout.setVisibility(expandState.get(2) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(2) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -340,10 +333,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gc.getDescription().setEnabled(false);
             gc.setTouchEnabled(preferences.getBoolean("touch", true));
             final View buttonLayout = (View) view.findViewById(R.id.button_cred);
-            final CardView cv = (CardView) view.findViewById(R.id.cv_cred);
             final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_cred);
-            final boolean isExpanded = expandState.get(3);
-            expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            expandableLayout.setVisibility(expandState.get(3) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(3) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -374,7 +365,6 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_result, menu);
-        MenuItem item = menu.findItem(R.id.action_save);
         menu.findItem(R.id.action_settings).setTitle((preferences.getBoolean("touch", true) ? "Disable" : "Enable") +
                 " Graph Touch");
         super.onCreateOptionsMenu(menu, inflater);

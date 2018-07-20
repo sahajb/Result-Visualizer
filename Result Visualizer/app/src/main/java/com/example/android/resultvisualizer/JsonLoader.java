@@ -1,7 +1,7 @@
 package com.example.android.resultvisualizer;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.android.resultvisualizer.Utilities.NotificationUtils;
 

@@ -1,14 +1,16 @@
 package com.example.android.resultvisualizer;
 
-import android.app.LoaderManager;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -51,13 +54,21 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                getRn.clearFocus();
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -71,10 +82,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
+                if (hasFocus)
+                    inputMethodManager.showSoftInput(getRn, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final LoaderManager manager = getLoaderManager();
+        final LoaderManager manager = getSupportLoaderManager();
         loadResult = (Button) findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +118,8 @@ public class MainActivity extends AppCompatActivity
             } else
                 Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
         } else {
+            if (getIntent().hasExtra(Intent.EXTRA_TEXT))
+                getIntent().removeExtra(Intent.EXTRA_TEXT);
             Toast.makeText(getApplicationContext(), "Internet connection is not available",
                     Toast.LENGTH_SHORT).show();
         }
@@ -158,7 +173,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://exam.dtu.ac.in/result.htm")));
                 break;
             case R.id.nav_git:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/sahajb")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/sahajb/Result-Visualizer")));
                 break;
             case R.id.nav_share:
                 startActivity(new Intent(MainActivity.this, ShareActivity.class));
@@ -168,6 +183,9 @@ public class MainActivity extends AppCompatActivity
                 i.putExtra(Intent.EXTRA_SUBJECT, "Contacting regarding : ");
                 startActivity(i.putExtra(Intent.EXTRA_EMAIL, new String[]{"result.visualizer@gmail.com"}));
                 break;
+            case R.id.nav_help:
+                startActivity(new Intent(MainActivity.this, HelpActivity.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -175,6 +193,24 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void valid() {
+        startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT, rn).
+                putExtra("quality", Integer.parseInt(preferences.getString("quality", "50"))));
+    }
+
+    public void invalid() {
+        pb.setVisibility(View.GONE);
+        parent.setVisibility(View.VISIBLE);
+        new AlertDialogFragment().show(getSupportFragmentManager(), "dialog");
+    }
+
+    public void error() {
+        pb.setVisibility(View.GONE);
+        parent.setVisibility(View.VISIBLE);
+        Toast.makeText(getApplicationContext(), "Server error. Please try later.", Toast.LENGTH_SHORT).show();
+    }
+
+    @NonNull
     @Override
     public Loader<JSONObject> onCreateLoader(int id, final Bundle args) {
         return new JsonLoader(this, rn, preferences.getBoolean("notification", true));
@@ -194,23 +230,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<JSONObject> loader) {
-    }
-
-    public void valid() {
-        startActivity(new Intent(MainActivity.this, ResultActivity.class).putExtra(Intent.EXTRA_TEXT, rn).
-                putExtra("quality", Integer.parseInt(preferences.getString("quality", "50"))));
-    }
-
-    public void invalid() {
-        pb.setVisibility(View.GONE);
-        parent.setVisibility(View.VISIBLE);
-        new AlertDialogFragment().show(getSupportFragmentManager(), "dialog");
-    }
-
-    public void error() {
-        pb.setVisibility(View.GONE);
-        parent.setVisibility(View.VISIBLE);
-        Toast.makeText(getApplicationContext(), "Server error. Please try later.", Toast.LENGTH_SHORT).show();
     }
 
 }

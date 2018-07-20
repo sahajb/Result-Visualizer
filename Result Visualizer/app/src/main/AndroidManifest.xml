@@ -54,7 +54,7 @@
             android:name=".AboutActivity"
             android:label="About"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/About">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.resultvisualizer.MainActivity" />
@@ -72,6 +72,15 @@
         <activity
             android:name=".SettingsActivity"
             android:label="Settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.resultvisualizer.MainActivity" />
+        </activity>
+        <activity
+            android:name=".HelpActivity"
+            android:label="Help"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
             <meta-data

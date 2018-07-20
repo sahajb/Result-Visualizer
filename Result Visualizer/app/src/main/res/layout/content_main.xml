@@ -73,9 +73,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="#E9E9E9"
-                android:paddingTop="8dp">
+                android:layout_marginTop="8dp">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/getrn"
@@ -83,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
+                    android:background="#E9E9E9"
                     android:gravity="center_vertical|start"
                     android:hint="Roll. No."
                     android:inputType="text"

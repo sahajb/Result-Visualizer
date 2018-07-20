@@ -20,4 +20,5 @@
             android:selectAllOnFocus="true"
             android:title="Saved Images Quality ( 0 - 100 )" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="" />
 </PreferenceScreen>

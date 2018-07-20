@@ -14,8 +14,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ResultActivity extends AppCompatActivity {
@@ -42,7 +44,8 @@ public class ResultActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        final SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(adapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         LinearLayout newTab = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.tab, null);
         ((TextView) newTab.findViewById(R.id.tab)).setText("Stats");
@@ -71,6 +74,22 @@ public class ResultActivity extends AppCompatActivity {
                 ((TextView) tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.parseColor("#88FFFFFF"));
                 ((ImageView) tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.parseColor("#88FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                super.onTabReselected(tab);
+                FragmentManager manager = getSupportFragmentManager();
+                Fragment fragment = adapter.getFragment(mViewPager, tab.getPosition(), manager);
+                if (fragment != null) {
+                    View view = fragment.getView();
+                    if (tab.getPosition() == 2)
+                        view.findViewById(R.id.scroll).scrollTo(0, 0);
+                    else {
+                        ListView listView = view.findViewById(R.id.list);
+                        listView.setSelection(0);
+                    }
+                }
+            }
         });
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(2);
@@ -96,6 +115,16 @@ public class ResultActivity extends AppCompatActivity {
         public int getCount() {
             return 3;
         }
+
+        public Fragment getFragment(ViewPager container, int position, FragmentManager fm) {
+            String name = makeFragmentName(container.getId(), position);
+            return fm.findFragmentByTag(name);
+        }
+
+        private String makeFragmentName(int viewId, int index) {
+            return "android:switcher:" + viewId + ":" + index;
+        }
+
     }
 }
 

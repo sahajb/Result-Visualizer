@@ -20,7 +20,7 @@ public class AlertDialogFragment extends DialogFragment {
                         dialog.dismiss();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        startActivity(new Intent(getContext(), AboutActivity.class));
+                        startActivity(new Intent(getContext(), HelpActivity.class));
                         break;
                 }
             }
@@ -29,6 +29,6 @@ public class AlertDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder.setTitle("Roll No. Is Not Valid !").setMessage("You can try entering the Roll No. again. However , " +
                 "if you face " + "the same issue please review our records policy.").setPositiveButton("Try Again",
-                dialogClickListener).setNegativeButton("About", dialogClickListener).create();
+                dialogClickListener).setNegativeButton("Help", dialogClickListener).create();
     }
 }
