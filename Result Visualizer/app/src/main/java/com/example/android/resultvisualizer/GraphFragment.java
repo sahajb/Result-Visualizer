@@ -52,6 +52,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonObjFromFile;
@@ -90,11 +91,11 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graph_fragment, container, false);
-        String rn = getArguments().getString("rn");
+        String rn = Objects.requireNonNull(getArguments()).getString("rn");
         JSONObject object = jsonObjFromFile().optJSONObject(rn);
         JSONObject info = jsonObjFromFile().optJSONObject("meta-data");
         {
-            gr = (LineChart) view.findViewById(R.id.graph_r);
+            gr = view.findViewById(R.id.graph_r);
             ((TextView) view.findViewById(R.id.r)).setText(("University Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
             int d = 0, l = 0;
@@ -109,7 +110,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             }
             LineDataSet dataSet = new LineDataSet(entries, "Rank");
             dataSet.setDrawFilled(true);
-            dataSet.setFillDrawable(ContextCompat.getDrawable(getContext(), R.drawable.line_chart_gradient));
+            dataSet.setFillDrawable(ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.line_chart_gradient));
             dataSet.setColor(Color.BLACK);
             dataSet.setCircleColor(Color.BLACK);
             dataSet.setLineWidth(2f);
@@ -132,7 +133,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
                     return "" + ((int) value);
                 }
             };
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(dataSet);
             LineData lineData = new LineData(dataSets);
             lineData.setValueFormatter(valueFormatter);
@@ -154,8 +155,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gr.getAxisLeft().setAxisLineWidth(1f);
             gr.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gr.getAxisLeft().setTextSize(12f);
-            final View buttonLayout = (View) view.findViewById(R.id.button_r);
-            final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_r);
+            final View buttonLayout = view.findViewById(R.id.button_r);
+            final ConstraintLayout expandableLayout = view.findViewById(R.id.ex_r);
             expandableLayout.setVisibility(expandState.get(0) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(0) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +170,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             });
         }
         {
-            gd = (LineChart) view.findViewById(R.id.graph_dr);
+            gd = view.findViewById(R.id.graph_dr);
             ((TextView) view.findViewById(R.id.dr)).setText(("Branch Rank"));
             ArrayList<Entry> entries = new ArrayList<>();
             int d = 0, l = 0;
@@ -207,7 +208,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
                     return "" + ((int) value);
                 }
             };
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(dataSet);
             LineData lineData = new LineData(dataSets);
             lineData.setValueFormatter(valueFormatter);
@@ -229,8 +230,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gd.getAxisLeft().setAxisLineWidth(1f);
             gd.getAxisLeft().enableGridDashedLine(20f, 20f, 0f);
             gd.getAxisLeft().setTextSize(12f);
-            final View buttonLayout = (View) view.findViewById(R.id.button_dr);
-            final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_dr);
+            final View buttonLayout = view.findViewById(R.id.button_dr);
+            final ConstraintLayout expandableLayout = view.findViewById(R.id.ex_dr);
             expandableLayout.setVisibility(expandState.get(1) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(1) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
@@ -244,7 +245,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             });
         }
         {
-            gg = (BarChart) view.findViewById(R.id.graph_gpa);
+            gg = view.findViewById(R.id.graph_gpa);
             ((TextView) view.findViewById(R.id.gpa)).setText(("GPA Distribution"));
             ArrayList<BarEntry> entries = new ArrayList<>();
             int l = 0;
@@ -292,8 +293,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gg.getAxisLeft().setTextSize(12f);
             gg.getAxisLeft().setLabelCount(11, true);
             gg.setTouchEnabled(preferences.getBoolean("touch", true));
-            final View buttonLayout = (View) view.findViewById(R.id.button_gpa);
-            final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_gpa);
+            final View buttonLayout = view.findViewById(R.id.button_gpa);
+            final ConstraintLayout expandableLayout = view.findViewById(R.id.ex_gpa);
             expandableLayout.setVisibility(expandState.get(2) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(2) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
@@ -307,7 +308,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             });
         }
         {
-            gc = (PieChart) view.findViewById(R.id.graph_cred);
+            gc = view.findViewById(R.id.graph_cred);
             ((TextView) view.findViewById(R.id.cred)).setText(("Credit Distribution"));
             ArrayList<PieEntry> entries = new ArrayList<>();
             try {
@@ -332,8 +333,8 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gc.setData(data);
             gc.getDescription().setEnabled(false);
             gc.setTouchEnabled(preferences.getBoolean("touch", true));
-            final View buttonLayout = (View) view.findViewById(R.id.button_cred);
-            final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.ex_cred);
+            final View buttonLayout = view.findViewById(R.id.button_cred);
+            final ConstraintLayout expandableLayout = view.findViewById(R.id.ex_cred);
             expandableLayout.setVisibility(expandState.get(3) ? View.VISIBLE : View.GONE);
             buttonLayout.setRotation(expandState.get(3) ? 180f : 0f);
             buttonLayout.setOnClickListener(new View.OnClickListener() {
@@ -391,17 +392,17 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             case 1:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    gc.saveToGallery("Credits Distribution.jpg", getArguments().getInt("quality", 50));
+                    gc.saveToGallery("Credits Distribution.jpg", Objects.requireNonNull(getArguments()).getInt("quality", 50));
                     gd.saveToGallery("Branch Rank.jpg", getArguments().getInt("quality", 50));
                     gr.saveToGallery("University Rank.jpg", getArguments().getInt("quality", 50));
                     gg.saveToGallery("GPA Distribution.jpg", getArguments().getInt("quality", 50));
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Graphs saved in Gallery", Snackbar.LENGTH_LONG).
+                    Snackbar.make(Objects.requireNonNull(getActivity()).findViewById(android.R.id.content), "Graphs saved in Gallery", Snackbar.LENGTH_LONG).
                             setAction("View", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(Intent.ACTION_VIEW);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setDataAndType(FileProvider.getUriForFile(getContext(), getActivity().
+                                    intent.setDataAndType(FileProvider.getUriForFile(Objects.requireNonNull(getContext()), getActivity().
                                             getApplicationContext().getPackageName() + ".provider", (new File(
                                             "storage/emulated/0/DCIM/GPA Distribution.jpg"))), "image/*");
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -430,7 +431,7 @@ public class GraphFragment extends Fragment implements SharedPreferences.OnShare
             gr.setTouchEnabled(sharedPreferences.getBoolean(key, true));
             gd.setTouchEnabled(sharedPreferences.getBoolean(key, true));
             gg.setTouchEnabled(sharedPreferences.getBoolean(key, true));
-            getActivity().invalidateOptionsMenu();
+            Objects.requireNonNull(getActivity()).invalidateOptionsMenu();
         }
     }
 }

@@ -31,6 +31,7 @@ import com.example.android.resultvisualizer.Utilities.JsonUtils;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity
@@ -39,8 +40,6 @@ public class MainActivity extends AppCompatActivity
     private EditText getRn;
 
     private String rn;
-
-    private Button loadResult;
 
     private ProgressBar pb;
 
@@ -55,40 +54,40 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 getRn.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), 0);
                 super.onDrawerSlide(drawerView, slideOffset);
             }
         };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        pb = (ProgressBar) findViewById(R.id.pb);
-        parent = (LinearLayout) findViewById(R.id.parent);
-        getRn = (EditText) findViewById(R.id.getrn);
+        pb = findViewById(R.id.pb);
+        parent = findViewById(R.id.parent);
+        getRn = findViewById(R.id.getrn);
         getRn.clearFocus();
         getRn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
                 if (hasFocus)
-                    inputMethodManager.showSoftInput(getRn, InputMethodManager.SHOW_IMPLICIT);
+                    Objects.requireNonNull(inputMethodManager).showSoftInput(getRn, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final LoaderManager manager = getSupportLoaderManager();
-        loadResult = (Button) findViewById(R.id.loadresult);
+        Button loadResult = findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void clicked(LoaderManager manager) {
-        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        NetworkInfo networkInfo = ((ConnectivityManager) Objects.requireNonNull(getSystemService(CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
         if ((networkInfo != null && networkInfo.isConnected()) || JsonUtils.jsonValid()) {
             if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
                 parent.setVisibility(View.INVISIBLE);
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
         else
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
@@ -188,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<JSONObject> loader, JSONObject jsonObject) {
+    public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject) {
         if (jsonObject.length() == 0)
             error();
         else {
@@ -229,7 +228,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<JSONObject> loader) {
+    public void onLoaderReset(@NonNull Loader<JSONObject> loader) {
     }
 
 }

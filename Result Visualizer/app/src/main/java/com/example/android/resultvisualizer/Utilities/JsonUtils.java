@@ -66,6 +66,7 @@ public final class JsonUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e("makeHttpRequest", "Error response code: " + urlConnection.getResponseCode());
+                return "";
             }
         } catch (IOException e) {
             return "";

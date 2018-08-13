@@ -24,12 +24,12 @@ import android.view.View;
 
 public class FixAppBarLayoutBehavior extends AppBarLayout.Behavior {
 
-    public FixAppBarLayoutBehavior() {
+    FixAppBarLayoutBehavior() {
         super();
     }
 
-    public FixAppBarLayoutBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public FixAppBarLayoutBehavior(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
     }
 
     @Override

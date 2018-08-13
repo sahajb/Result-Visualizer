@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.CardView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +16,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.example.android.resultvisualizer.Utilities.AnimationUtils.onClickButton;
 
 public class StatsAdapter extends ArrayAdapter<Stats> {
 
     private SparseBooleanArray expandState = new SparseBooleanArray();
-    private String rn;
 
-    public StatsAdapter(@NonNull Context context, @NonNull ArrayList<Stats> objects, String s) {
+    StatsAdapter(@NonNull Context context, @NonNull ArrayList<Stats> objects) {
         super(context, 0, objects);
-        rn = s;
         for (int i = 0; i < objects.size(); i++) {
             expandState.append(i, true);
         }
@@ -37,7 +35,7 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Stats stats = getItem(position);
-        int j = stats.getPosition();
+        int j = Objects.requireNonNull(stats).getPosition();
         View view = convertView;
         if (view == null)
             view = LayoutInflater.from(getContext()).inflate(R.layout.stats, parent, false);
@@ -61,9 +59,8 @@ public class StatsAdapter extends ArrayAdapter<Stats> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final View buttonLayout = (View) view.findViewById(R.id.button);
-        final CardView cv = (CardView) view.findViewById(R.id.cv);
-        final ConstraintLayout expandableLayout = (ConstraintLayout) view.findViewById(R.id.expandableLayout);
+        final View buttonLayout = view.findViewById(R.id.button);
+        final ConstraintLayout expandableLayout = view.findViewById(R.id.expandableLayout);
         final boolean isExpanded = expandState.get(position);
         expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
