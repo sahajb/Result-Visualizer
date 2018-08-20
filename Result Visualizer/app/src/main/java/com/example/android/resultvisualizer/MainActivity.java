@@ -3,6 +3,8 @@ package com.example.android.resultvisualizer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,12 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.resultvisualizer.Utilities.JsonUtils;
-
 import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.invalidateJson;
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonValid;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<JSONObject> {
@@ -44,8 +47,6 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar pb;
 
     private LinearLayout parent;
-
-    private boolean b;
 
     private SharedPreferences preferences;
 
@@ -86,51 +87,58 @@ public class MainActivity extends AppCompatActivity
             }
         });
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final LoaderManager manager = getSupportLoaderManager();
         Button loadResult = findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 rn = getRn.getText().toString();
                 getRn.setText("");
-                clicked(manager);
+                clicked();
             }
         });
-        b = getIntent().hasExtra(Intent.EXTRA_TEXT);
-        if (b) {
+        if (getIntent().hasExtra(Intent.EXTRA_TEXT)) {
             rn = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-            clicked(manager);
+            getIntent().removeExtra(Intent.EXTRA_TEXT);
+            clicked();
         }
     }
 
-    private void clicked(LoaderManager manager) {
+    private void clicked() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
         NetworkInfo networkInfo = ((ConnectivityManager) Objects.requireNonNull(getSystemService(CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
-        if ((networkInfo != null && networkInfo.isConnected()) || JsonUtils.jsonValid()) {
+        if ((networkInfo != null && networkInfo.isConnected()) || jsonValid()) {
             if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
                 parent.setVisibility(View.INVISIBLE);
                 pb.setVisibility(View.VISIBLE);
-                Loader<JSONObject> loader = manager.getLoader(0);
+                Loader<JSONObject> loader = getSupportLoaderManager().getLoader(0);
                 if (loader == null)
-                    manager.initLoader(0, null, MainActivity.this);
+                    getSupportLoaderManager().initLoader(0, null, MainActivity.this);
                 else
-                    manager.restartLoader(0, null, MainActivity.this);
+                    getSupportLoaderManager().restartLoader(0, null, MainActivity.this);
             } else
                 Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
         } else {
-            if (getIntent().hasExtra(Intent.EXTRA_TEXT))
-                getIntent().removeExtra(Intent.EXTRA_TEXT);
             Toast.makeText(getApplicationContext(), "Internet connection is not available",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (!b) {
-            pb.setVisibility(View.GONE);
-            parent.setVisibility(View.VISIBLE);
-        }
+    protected void onStop() {
+        super.onStop();
+        pb.setVisibility(View.GONE);
+        parent.setVisibility(View.VISIBLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing())
+            invalidateJson();
     }
 
     @Override
@@ -225,6 +233,8 @@ public class MainActivity extends AppCompatActivity
             else
                 valid();
         }
+        getSupportLoaderManager().destroyLoader(0);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
     @Override

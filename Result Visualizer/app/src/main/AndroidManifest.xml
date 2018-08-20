@@ -29,7 +29,9 @@
             android:name=".Utilities.NotificationService"
             android:exported="false" />
 
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,6 +41,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ResultActivity"

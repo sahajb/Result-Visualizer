@@ -103,4 +103,8 @@ public final class JsonUtils {
         return (obj != null) && (obj.length() != 0);
     }
 
+    public static void invalidateJson() {
+        obj = null;
+    }
+
 }

@@ -20,5 +20,13 @@
             android:selectAllOnFocus="true"
             android:title="Saved Images Quality ( 0 - 100 )" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="Caching"
+        android:title="Caching">
+        <Preference
+            android:key="cache"
+            android:title="Clear Cache"
+            android:summary="Tap on this to clear any caches present"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="" />
 </PreferenceScreen>
