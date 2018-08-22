@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 public class ResultActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
@@ -38,40 +40,40 @@ public class ResultActivity extends AppCompatActivity {
             q = getIntent().getIntExtra("quality", 50);
         AppBarLayout abl = findViewById(R.id.appbar);
         ((CoordinatorLayout.LayoutParams) abl.getLayoutParams()).setBehavior(new FixAppBarLayoutBehavior());
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Result : " + rn.substring(5));
         toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        mViewPager = findViewById(R.id.container);
         final SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         LinearLayout newTab = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        ((TextView) newTab.findViewById(R.id.tab)).setText("Stats");
+        ((TextView) newTab.findViewById(R.id.tab)).setText(("Stats"));
         ((ImageView) newTab.findViewById(R.id.img)).setImageResource(R.drawable.ic_stats_tab);
-        tabLayout.getTabAt(0).setCustomView(newTab);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setCustomView(newTab);
         LinearLayout newTab1 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        ((TextView) newTab1.findViewById(R.id.tab)).setText("Summary");
+        ((TextView) newTab1.findViewById(R.id.tab)).setText(("Summary"));
         ((ImageView) newTab1.findViewById(R.id.img)).setImageResource(R.drawable.ic_summary_tab);
-        tabLayout.getTabAt(1).setCustomView(newTab1);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setCustomView(newTab1);
         LinearLayout newTab2 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        ((TextView) newTab2.findViewById(R.id.tab)).setText("Graphs");
+        ((TextView) newTab2.findViewById(R.id.tab)).setText(("Graphs"));
         ((ImageView) newTab2.findViewById(R.id.img)).setImageResource(R.drawable.ic_graph_tab);
-        tabLayout.getTabAt(2).setCustomView(newTab2);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(newTab2);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
-                ((TextView) tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.WHITE);
+                ((TextView) Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab)).setTextColor(Color.WHITE);
                 ((ImageView) tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 super.onTabUnselected(tab);
-                ((TextView) tab.getCustomView().findViewById(R.id.tab)).setTextColor(Color.parseColor("#88FFFFFF"));
+                ((TextView) Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab)).setTextColor(Color.parseColor("#88FFFFFF"));
                 ((ImageView) tab.getCustomView().findViewById(R.id.img)).setColorFilter(Color.parseColor("#88FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
 
@@ -83,9 +85,9 @@ public class ResultActivity extends AppCompatActivity {
                 if (fragment != null) {
                     View view = fragment.getView();
                     if (tab.getPosition() == 2)
-                        view.findViewById(R.id.scroll).scrollTo(0, 0);
+                        Objects.requireNonNull(view).findViewById(R.id.scroll).scrollTo(0, 0);
                     else {
-                        ListView listView = view.findViewById(R.id.list);
+                        ListView listView = Objects.requireNonNull(view).findViewById(R.id.list);
                         listView.setSelection(0);
                     }
                 }
@@ -97,16 +99,16 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position == 0)
-                return StatsFragment.newInstance(rn, getApplicationContext());
+                return StatsFragment.newInstance(rn);
             else if (position == 1)
-                return SummaryFragment.newInstance(rn, getApplicationContext());
+                return SummaryFragment.newInstance(rn);
             else
                 return GraphFragment.newInstance(rn, getApplicationContext(), q);
         }

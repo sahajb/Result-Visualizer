@@ -14,7 +14,7 @@ public class Stats {
 
     private int sub;
 
-    public Stats(JSONObject jsonObject, int i, int cl, int c, int s) {
+    Stats(JSONObject jsonObject, int i, int cl, int c, int s) {
         object = jsonObject;
         position = i;
         clr = cl;

@@ -15,7 +15,7 @@ public class JsonLoader extends AsyncTaskLoader<JSONObject> {
 
     private boolean bool;
 
-    public JsonLoader(Context context, String s, boolean b) {
+    JsonLoader(Context context, String s, boolean b) {
         super(context);
         rn = s;
         bool = b;

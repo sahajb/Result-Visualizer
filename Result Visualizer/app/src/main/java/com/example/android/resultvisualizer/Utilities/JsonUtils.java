@@ -66,6 +66,7 @@ public final class JsonUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e("makeHttpRequest", "Error response code: " + urlConnection.getResponseCode());
+                return "";
             }
         } catch (IOException e) {
             return "";
@@ -100,6 +101,10 @@ public final class JsonUtils {
 
     public static boolean jsonValid() {
         return (obj != null) && (obj.length() != 0);
+    }
+
+    public static void invalidateJson() {
+        obj = null;
     }
 
 }

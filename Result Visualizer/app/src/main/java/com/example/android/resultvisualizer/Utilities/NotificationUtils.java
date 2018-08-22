@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import com.example.android.resultvisualizer.NotificationActivity;
 import com.example.android.resultvisualizer.R;
 
+import java.util.Objects;
+
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationUtils {
@@ -25,7 +27,7 @@ public class NotificationUtils {
 
     public static void clearAllNotifications(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+        Objects.requireNonNull(notificationManager).cancelAll();
     }
 
     public static void notification(Context context, String s) {
@@ -36,7 +38,7 @@ public class NotificationUtils {
                     "notification-channel",
                     "Primary",
                     NotificationManager.IMPORTANCE_HIGH);
-            manager.createNotificationChannel(mChannel);
+            Objects.requireNonNull(manager).createNotificationChannel(mChannel);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notification-channel")
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary)).setSmallIcon(R.drawable.ic_notification)
@@ -47,7 +49,7 @@ public class NotificationUtils {
                         setAutoCancel(true);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        manager.notify(1, builder.build());
+        Objects.requireNonNull(manager).notify(1, builder.build());
     }
 
     private static NotificationCompat.Action dismiss(Context context) {

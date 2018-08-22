@@ -3,6 +3,8 @@ package com.example.android.resultvisualizer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,11 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.resultvisualizer.Utilities.JsonUtils;
-
 import org.json.JSONObject;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
+
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.invalidateJson;
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonValid;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<JSONObject> {
@@ -40,13 +44,9 @@ public class MainActivity extends AppCompatActivity
 
     private String rn;
 
-    private Button loadResult;
-
     private ProgressBar pb;
 
     private LinearLayout parent;
-
-    private boolean b;
 
     private SharedPreferences preferences;
 
@@ -55,88 +55,95 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextAppearance(this, R.style.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 getRn.clearFocus();
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), 0);
                 super.onDrawerSlide(drawerView, slideOffset);
             }
         };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        pb = (ProgressBar) findViewById(R.id.pb);
-        parent = (LinearLayout) findViewById(R.id.parent);
-        getRn = (EditText) findViewById(R.id.getrn);
+        pb = findViewById(R.id.pb);
+        parent = findViewById(R.id.parent);
+        getRn = findViewById(R.id.getrn);
         getRn.clearFocus();
         getRn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 getRn.setHint(hasFocus ? "Ex. 2016/B10/1789" : "");
                 if (hasFocus)
-                    inputMethodManager.showSoftInput(getRn, InputMethodManager.SHOW_IMPLICIT);
+                    Objects.requireNonNull(inputMethodManager).showSoftInput(getRn, InputMethodManager.SHOW_IMPLICIT);
             }
         });
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final LoaderManager manager = getSupportLoaderManager();
-        loadResult = (Button) findViewById(R.id.loadresult);
+        Button loadResult = findViewById(R.id.loadresult);
         loadResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 rn = getRn.getText().toString();
                 getRn.setText("");
-                clicked(manager);
+                clicked();
             }
         });
-        b = getIntent().hasExtra(Intent.EXTRA_TEXT);
-        if (b) {
+        if (getIntent().hasExtra(Intent.EXTRA_TEXT)) {
             rn = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-            clicked(manager);
+            getIntent().removeExtra(Intent.EXTRA_TEXT);
+            clicked();
         }
     }
 
-    private void clicked(LoaderManager manager) {
-        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-        if ((networkInfo != null && networkInfo.isConnected()) || JsonUtils.jsonValid()) {
+    private void clicked() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
+        NetworkInfo networkInfo = ((ConnectivityManager) Objects.requireNonNull(getSystemService(CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
+        if ((networkInfo != null && networkInfo.isConnected()) || jsonValid()) {
             if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
                 parent.setVisibility(View.INVISIBLE);
                 pb.setVisibility(View.VISIBLE);
-                Loader<JSONObject> loader = manager.getLoader(0);
+                Loader<JSONObject> loader = getSupportLoaderManager().getLoader(0);
                 if (loader == null)
-                    manager.initLoader(0, null, MainActivity.this);
+                    getSupportLoaderManager().initLoader(0, null, MainActivity.this);
                 else
-                    manager.restartLoader(0, null, MainActivity.this);
+                    getSupportLoaderManager().restartLoader(0, null, MainActivity.this);
             } else
                 Toast.makeText(getApplicationContext(), "Roll. no. pattern is invalid", Toast.LENGTH_SHORT).show();
         } else {
-            if (getIntent().hasExtra(Intent.EXTRA_TEXT))
-                getIntent().removeExtra(Intent.EXTRA_TEXT);
             Toast.makeText(getApplicationContext(), "Internet connection is not available",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (!b) {
-            pb.setVisibility(View.GONE);
-            parent.setVisibility(View.VISIBLE);
-        }
+    protected void onStop() {
+        super.onStop();
+        pb.setVisibility(View.GONE);
+        parent.setVisibility(View.VISIBLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing())
+            invalidateJson();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
         else
@@ -162,7 +169,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
@@ -188,7 +195,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -217,7 +224,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<JSONObject> loader, JSONObject jsonObject) {
+    public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject) {
         if (jsonObject.length() == 0)
             error();
         else {
@@ -226,10 +233,12 @@ public class MainActivity extends AppCompatActivity
             else
                 valid();
         }
+        getSupportLoaderManager().destroyLoader(0);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
     @Override
-    public void onLoaderReset(Loader<JSONObject> loader) {
+    public void onLoaderReset(@NonNull Loader<JSONObject> loader) {
     }
 
 }

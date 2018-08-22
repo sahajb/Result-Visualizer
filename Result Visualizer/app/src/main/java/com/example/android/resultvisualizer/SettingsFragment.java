@@ -6,13 +6,16 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.widget.Toast;
 
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.invalidateJson;
+import static com.example.android.resultvisualizer.Utilities.JsonUtils.jsonValid;
+
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.pref_main);
-        EditTextPreference preference = (EditTextPreference) getPreferenceScreen().findPreference("quality");
-        preference.setSummary(preference.getText());
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        EditTextPreference textPreference = (EditTextPreference) getPreferenceScreen().findPreference("quality");
+        textPreference.setSummary(textPreference.getText());
+        textPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 String string = newValue.toString();
@@ -30,6 +33,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 preference.setSummary(string);
                 return true;
 
+            }
+        });
+        Preference preference = getPreferenceScreen().findPreference("cache");
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (jsonValid()) {
+                    invalidateJson();
+                    Toast.makeText(getContext(), "Cache Cleared", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getContext(), "No cache to clear", Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
     }

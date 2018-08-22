@@ -13,8 +13,6 @@ public final class AnimationUtils {
     private AnimationUtils() {
     }
 
-    private static ValueAnimator mAnimator;
-
     private static void clicked(final ConstraintLayout mLinearLayout, final View buttonLayout) {
 
         if (mLinearLayout.getVisibility() != View.VISIBLE) {
@@ -22,7 +20,7 @@ public final class AnimationUtils {
             final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             mLinearLayout.measure(widthSpec, heightSpec);
-            mAnimator = slideAnimator(mLinearLayout, 0, mLinearLayout.getMeasuredHeight());
+            ValueAnimator mAnimator = slideAnimator(mLinearLayout, 0, mLinearLayout.getMeasuredHeight());
             mAnimator.start();
             createRotateAnimator(buttonLayout, 0f, 180f).start();
         } else {
