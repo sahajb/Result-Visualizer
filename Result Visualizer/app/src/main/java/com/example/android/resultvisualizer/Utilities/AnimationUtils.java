@@ -29,7 +29,6 @@ public final class AnimationUtils {
             mAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                    //Height=0, but it set visibility to GONE
                     mLinearLayout.setVisibility(View.GONE);
                 }
 
