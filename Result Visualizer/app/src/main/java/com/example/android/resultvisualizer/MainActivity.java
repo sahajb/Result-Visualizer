@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
         NetworkInfo networkInfo = ((ConnectivityManager) Objects.requireNonNull(getSystemService(CONNECTIVITY_SERVICE))).getActiveNetworkInfo();
         if ((networkInfo != null && networkInfo.isConnected()) || jsonValid()) {
-            if (Pattern.compile("(2016)/([A-B][1-9]|10)/([0-9]{2,4})").matcher(rn).matches()) {
+            if (Pattern.compile("(2016)/([A-B]([1-9]|10))/([0-9]{2,4})").matcher(rn).matches()) {
                 parent.setVisibility(View.INVISIBLE);
                 pb.setVisibility(View.VISIBLE);
                 Loader<JSONObject> loader = getSupportLoaderManager().getLoader(0);
